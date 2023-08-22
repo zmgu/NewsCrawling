@@ -13,7 +13,7 @@ def hankyoreh():
     driver = webdriver.Chrome()
 
     # MySQL 연결
-    conn = pymysql.connect(host='192.168.0.84', user='tissue', password='1234', db='tissue_db', charset='utf8mb4')
+    conn = pymysql.connect(host='xxx.xxx.xxx.xxx', user='tissue', password='xxxx', db='tissue_db', charset='utf8mb4')
     cur = conn.cursor()
 
     # 최신 날짜 불러오기
