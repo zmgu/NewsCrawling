@@ -80,7 +80,7 @@ def ytn():
                     content_full = soup.select_one('#CmAdContent')
                     for tag in content_full.select('div, br'):
                         tag.decompose()
-                    content = content_full.get_text(strip=True)
+                    content = content_full.get_text('\n\n', strip=True)
 
                     # 크롤링 데이터 리스트
                     insert_list = [date, title, content, 'YTN', href, img_url]
