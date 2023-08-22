@@ -10,7 +10,7 @@ from Herald import herald
 def insert_articles():
 
     print('크롤링 시작')
-    conn = pymysql.connect(host='127.0.0.1', user='TABA', password='1234', db='TABA', charset='utf8mb4')
+    conn = pymysql.connect(host='xxx.xxx.xxx.xxx', user='tissue', password='xxxx', db='tissue_db', charset='utf8mb4')
     cur = conn.cursor()
 
     commit_cnt = 0
