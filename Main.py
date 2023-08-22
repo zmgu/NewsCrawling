@@ -1,16 +1,16 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
-import time
+from apscheduler.triggers.interval import IntervalTrigger
+import datetime
 import pymysql
 from pymysql import IntegrityError
-from YTN import ytn
 from Hankyoreh import hankyoreh
 from Herald import herald
 
 
 def insert_articles():
 
-    # MySQL 연결
-    conn = pymysql.connect(host='xxx.xxx.xxx.xxx', user='tissue', password='xxxx', db='tissue_db', charset='utf8mb4')
+    print('크롤링 시작')
+    conn = pymysql.connect(host='127.0.0.1', user='TABA', password='1234', db='TABA', charset='utf8mb4')
     cur = conn.cursor()
 
     commit_cnt = 0
@@ -18,8 +18,7 @@ def insert_articles():
 
     data_list += herald()
     data_list += hankyoreh()
-    data_list += ytn()
-    
+
     data_list = sorted(data_list, key=lambda x: x[0])
     for data in data_list:
         try:
@@ -40,11 +39,14 @@ def insert_articles():
 
 
 def main():
+
     scheduler = BlockingScheduler()
-    scheduler.add_job(insert_articles, 'interval', hours=1)
+
+    trigger = IntervalTrigger(hours=1, start_date=datetime.datetime.now())
+    scheduler.add_job(insert_articles, trigger=trigger)
+
     scheduler.start()
 
 
 if __name__ == '__main__':
     main()
-
