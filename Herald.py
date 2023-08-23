@@ -51,7 +51,6 @@ def herald():
         except TimeoutException:
             continue
 
-        # 크롤링 시작
         news_list = driver.find_elements(
             By.CSS_SELECTOR, 'body > div > div.list_wrap > div.list_l > div.list > ul')
 
@@ -70,7 +69,7 @@ def herald():
                     except NoSuchElementException:
                         img_url = ''
 
-                    # 추출한 URL 크롤링 시작
+                    # BeautifulSoup
                     resource = requests.get(href)
                     soup = BeautifulSoup(resource.text, 'html.parser')
 
