@@ -1,19 +1,22 @@
-import pymysql
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
-from pymysql import IntegrityError
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import requests
 from bs4 import BeautifulSoup
+import pymysql
 from datetime import datetime
-
 
 def hankyoreh():
     # selenium 기본 설정
-    driver = webdriver.Chrome()
+    options = Options()
+    options.add_argument('--headless')
+    driver = webdriver.Chrome(options=options)
 
     # MySQL 연결
-    conn = pymysql.connect(host='xxx.xxx.xxx.xxx', user='tissue', password='xxxx', db='tissue_db', charset='utf8mb4')
+    conn = pymysql.connect(host='xxx.xxx.xxx.xxx', user='tissue', password='xxxx', db='tissue', charset='utf8mb4')
     cur = conn.cursor()
 
     # 최신 날짜 불러오기
@@ -32,15 +35,21 @@ def hankyoreh():
     # 크롤링 데이터 리스트
     data_list = []
 
-    for page in range(1, 61):
+    for page in range(1, 80):
         if already_data is True:
             break
 
-        url = f'https://www.hani.co.kr/arti/economy/economy_general/list{page}.html'
-        driver.implicitly_wait(15)
+        url = f'https://www.hani.co.kr/arti/economy/list{page}.html'
+
         driver.get(url)
 
-        # 크롤링 시작
+        try:
+            (WebDriverWait(driver, 10)
+             .until(EC.presence_of_element_located((By.CSS_SELECTOR,
+                                                    '#section-left-scroll-in > div.section-list-area > div'))))
+        except TimeoutException:
+            continue
+
         for index in range(2, 17):
             if page == 1 and index == 2:  # 가장 최근에 올라온 기사 날짜 태크 에러 제외
                 continue
@@ -83,8 +92,9 @@ def hankyoreh():
 
                 # 본문
                 content_full = soup.select_one('#a-left-scroll-in > div.article-text > div > div.text')
-                for tag in content_full.select('div, a'):
-                    tag.decompose()
+                for p_tag in content_full.find_all('p'):
+                    p_tag.decompose()
+
                 content = content_full.get_text('\n\n', strip=True)
 
                 # 크롤링 데이터 리스트
@@ -93,8 +103,6 @@ def hankyoreh():
             except NoSuchElementException:  # 태그 못 찾는 경우 예외
                 continue
             except AttributeError:  # 사진만 있는 기사
-                continue
-            except IntegrityError:
                 continue
 
     driver.quit()
