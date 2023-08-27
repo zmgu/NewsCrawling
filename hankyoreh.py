@@ -39,7 +39,7 @@ def hankyoreh():
         if already_data is True:
             break
 
-        url = f'https://www.hani.co.kr/arti/economy/list{page}.html'
+        url = f'https://www.hani.co.kr/arti/economy/finance/list{page}.html'
 
         driver.get(url)
 
