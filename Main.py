@@ -41,10 +41,7 @@ def insert_articles():
 def main():
 
     scheduler = BlockingScheduler()
-
-    trigger = IntervalTrigger(hours=1, start_date=datetime.datetime.now())
-    scheduler.add_job(insert_articles, trigger=trigger)
-
+    scheduler.add_job(insert_articles, trigger='interval', seconds=600)
     scheduler.start()
 
 
