@@ -98,5 +98,4 @@ def moneyToday():
                     continue
 
     driver.quit()
-
     return data_list
