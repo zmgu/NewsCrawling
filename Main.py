@@ -34,7 +34,6 @@ def insert_articles():
 
         conn.commit()
     print(f'{commit_cnt}개 커밋 완료')
-
     conn.close()
 
 
